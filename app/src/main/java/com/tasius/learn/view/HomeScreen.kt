@@ -6,21 +6,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.google.gson.Gson
 import com.tasius.learn.component.GridLayoutRecyclerView
 import com.tasius.learn.component.ImageCard.ImageCard
 import com.tasius.learn.component.ImageCard.model.ImageCardData
-import com.tasius.learn.navigation.Screen
+import com.tasius.learn.navigation.DetailScreen
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreenView(navController: NavHostController) {
     /** THIS IS FOR MY OWN ARCHIVE
      * FOR LEARN AND AN EXAMPLE FOR GRID LAYOUT RECYCLERVIEW **/
     val data = mutableListOf<ImageCardData>()
     for (i in 1..21) {
         data.add(
             ImageCardData(
-                path = "A",
+                path = "https://cdn.discordapp.com/attachments/1188816924759560272/1234292887823585321/vts-2024-04-03_21h05_17.png?ex=66474694&is=6645f514&hm=919a5c729d25591d37f17e7d2d03ca3bcd55c9a4dabe49c25b52d10e4b6e3e3a&",
                 contentDescription = "test",
                 title = "Pacar Nomor $i"
             )
@@ -38,9 +37,12 @@ fun HomeScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(8.dp)
                 .clickable {
-                    val uri = Gson().toJson(item)
                     navController.navigate(
-                        route = Screen.Detail.withArgs(uri)
+                        DetailScreen(
+                            item.path,
+                            item.contentDescription,
+                            item.title
+                        )
                     )
                 }
         )

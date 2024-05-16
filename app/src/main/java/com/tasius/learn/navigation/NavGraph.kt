@@ -1,42 +1,41 @@
 package com.tasius.learn.navigation
 
-import android.net.Uri
-import android.os.Bundle
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.google.gson.Gson
+import androidx.navigation.toRoute
 import com.tasius.learn.component.ImageCard.model.ImageCardData
-import com.tasius.learn.view.DetailScreen
-import com.tasius.learn.view.HomeScreen
+import com.tasius.learn.view.DetailScreenView
+import com.tasius.learn.view.HomeScreenView
+import kotlinx.serialization.Serializable
 
 @Composable
 fun SetupNavGraph(
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-        composable(
-            route = Screen.Home.route
-        ) {
-            HomeScreen(navController)
+    NavHost(navController = navController, startDestination = HomeScreen) {
+        composable<HomeScreen> {
+            HomeScreenView(navController = navController)
         }
-        composable(
-            route = Screen.Detail.route + "/{${DETAIL_ARGUMENTS.DATA}}",
-            arguments = listOf(
-                navArgument(DETAIL_ARGUMENTS.DATA) {
-                    type = NavType.StringType
-                }
+        composable<DetailScreen> {
+            val args = it.toRoute<DetailScreen>()
+            val data = ImageCardData(
+                path = args.path,
+                contentDescription = args.contentDescription,
+                title = args.title
             )
-        ) {
-            val data = Gson().fromJson(
-                it.arguments?.getString(DETAIL_ARGUMENTS.DATA),
-                ImageCardData::class.java
-            )
-            DetailScreen(navController, data)
+            DetailScreenView(navController = navController, data = data)
         }
     }
 }
+
+@Serializable
+object HomeScreen
+
+@Serializable
+data class DetailScreen(
+    var path: String,
+    var contentDescription: String,
+    var title: String
+)
