@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.google.gson.Gson
 import com.tasius.learn.component.GridLayoutRecyclerView
 import com.tasius.learn.component.ImageCard.ImageCard
 import com.tasius.learn.component.ImageCard.model.ImageCardData
@@ -19,14 +20,17 @@ fun HomeScreen(navController: NavHostController) {
     for (i in 1..21) {
         data.add(
             ImageCardData(
-                path = "https://cdn.discordapp.com/attachments/1188816924759560272/1234292887823585321/vts-2024-04-03_21h05_17.png?ex=6645f514&is=6644a394&hm=8e488bd16a54e53d6dae763f57e4df69d8361d446b5336ec0617df62ac63d8c4&",
+                path = "A",
                 contentDescription = "test",
-                title = "Pacar #$i"
+                title = "Pacar Nomor $i"
             )
         )
     }
     GridLayoutRecyclerView(data = data, content = {
         val item = it as ImageCardData
+        /**
+         * TODO : IF THERE IS A LINK ON THE DATA IT WILL CRASH THE APPS
+         */
         ImageCard(
             path = item.path,
             contentDescription = item.contentDescription,
@@ -34,7 +38,10 @@ fun HomeScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(8.dp)
                 .clickable {
-                    navController.navigate(route = Screen.Detail.passData(item))
+                    val uri = Gson().toJson(item)
+                    navController.navigate(
+                        route = Screen.Detail.withArgs(uri)
+                    )
                 }
         )
     })
